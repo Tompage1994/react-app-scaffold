@@ -1,0 +1,26 @@
+{
+  "extends": "airbnb",
+  "parser": "babel-eslint",
+  "plugins": [
+    "react",
+    "jest"
+  ],
+  "rules": {
+    "no-underscore-dangle": "off",
+    "react/jsx-filename-extension": "off",
+    "react/destructuring-assignment": "off",
+    "jsx-a11y/label-has-for": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "react/no-array-index-key": "off"
+  },
+  "globals": {
+    "sessionStorage": false,
+    "window": false,
+    "document": false,
+    "describe": false,
+    "fetch": false,
+    "FileReader": false,
+    "test": false,
+    "expect": false
+  }
+}

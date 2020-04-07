@@ -6,6 +6,8 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-plugin-jest": "^23.8.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"
@@ -14,7 +16,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:ci": "react-scripts test --watch-all=false",
+    "eject": "react-scripts eject",
+    "lint": "eslint . --ext .jsx"
   },
   "eslintConfig": {
     "extends": "react-app"
