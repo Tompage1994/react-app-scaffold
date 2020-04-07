@@ -30,7 +30,7 @@ pipeline {
         stage('Run Unit Tests') {
             steps {
                 echo '### Running unit tests ###'
-                sh 'npm test:ci'
+                sh 'npm run test:ci'
             }
         }
 
