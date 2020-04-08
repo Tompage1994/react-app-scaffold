@@ -76,7 +76,7 @@ pipeline {
 
         stage('Wait for deployment in DEV env') {
             steps {
-                sh "oc rollout status dc/${APP_NAME} -n ${STAGE_PROJECT}"
+                sh "oc rollout status dc/${APP_NAME} -n ${DEV_PROJECT}"
                 script {
                     openshift.withCluster() {
                         openshift.withProject( "${DEV_PROJECT}" ) {
