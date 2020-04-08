@@ -37,18 +37,6 @@ objects:
             ports:
             - containerPort: 8080
               protocol: TCP
-            livenessProbe:
-              httpGet:
-                path: /health
-                port: 8080
-              initialDelaySeconds: 15
-              timeoutSeconds: 1
-            readinessProbe:
-              httpGet:
-                path: /health
-                port: 8080
-              initialDelaySeconds: 15
-              timeoutSeconds: 1
           restartPolicy: Always
   - kind: Service
     apiVersion: v1
