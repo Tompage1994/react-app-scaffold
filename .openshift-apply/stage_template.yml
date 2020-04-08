@@ -1,0 +1,91 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: "${APP_NAME}-template"
+objects:
+  - kind: DeploymentConfig
+    apiVersion: v1
+    metadata:
+      name: "${APP_NAME}"
+      labels:
+        app: "${APP_NAME}"
+    spec:
+      replicas: "${{REPLICA_COUNT}}"
+      selector:
+        name: "${APP_NAME}"
+      triggers:
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+          - "${APP_NAME}"
+          from:
+            kind: ImageStreamTag
+            name: "${APP_NAME}:stage"
+        type: ImageChange
+      strategy:
+        type: Rolling
+      template:
+        metadata:
+          name: "${APP_NAME}"
+          labels:
+            name: "${APP_NAME}"
+            app: "${APP_NAME}"
+        spec:
+          containers:
+          - name: "${APP_NAME}"
+            image: '${APP_NAME}:stage'
+            ports:
+            - containerPort: 8080
+              protocol: TCP
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              initialDelaySeconds: 15
+              timeoutSeconds: 1
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              initialDelaySeconds: 15
+              timeoutSeconds: 1
+          restartPolicy: Always
+  - kind: Service
+    apiVersion: v1
+    metadata:
+      name: "${APP_NAME}"
+      labels:
+        app: "${APP_NAME}"
+    spec:
+      ports:
+        - protocol: TCP
+          port: 80
+          targetPort: 8080
+      selector:
+        app: "${APP_NAME}"
+  - kind: Route
+    apiVersion: route.openshift.io/v1
+    metadata:
+      name: "${APP_NAME}"
+      labels:
+        app: "${APP_NAME}"
+    spec:
+      to:
+        kind: Service
+        name: "${APP_NAME}"
+        weight: 100
+      port:
+        targetPort: 8080
+parameters:
+  - name: SOURCE_REPOSITORY_URL
+    displayName: Source Repository URL
+    description: The URL of the repository with your application source code
+    required: true
+  - name: APP_NAME
+    displayName: App Name
+    description: The name of the app which is being deployed
+    required: true
+  - name: REPLICA_COUNT
+    description: Number of replicas to run
+    value: "1"
+    required: true

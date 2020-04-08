@@ -11,7 +11,7 @@ pipeline {
     environment {
         DEV_PROJECT = "tpage-dev"
         STAGE_PROJECT = "tpage-stage"
-        APP_GIT_URL = "https://github.com/Tompage1994/react-app-scaffold"
+        APP_GIT_URL = "https://github.com/Tompage1994/react-app-scaffold.git"
         APP_NAME = "react-app-scaffold"
     }
 
@@ -43,18 +43,16 @@ pipeline {
 
         stage('Launch new app in DEV env') {
             steps {
-                echo '### Cleaning existing resources in DEV env ###'
-                sh '''
-                        oc project ${DEV_PROJECT}
-                        oc delete all -l app=${APP_NAME}
-                        sleep 5
-                   '''
-
                 echo '### Creating a new app in DEV env ###'
                 sh '''
                         oc project ${DEV_PROJECT}
-                        oc new-app --name ${APP_NAME} nodejs:8~${APP_GIT_URL}
-                        oc expose svc/${APP_NAME}
+
+                        oc process -f .openshift-apply/dev_template.yml \
+                        -n tpage-dev -p APP_NAME=${APP_NAME} \
+                        -p SOURCE_REPOSITORY_URL="${APP_GIT_URL}" \
+                        | oc apply -f -
+
+                        oc start-build ${APP_NAME}
                 '''
             }
         }
@@ -109,16 +107,15 @@ pipeline {
                 echo '### Cleaning existing resources in Staging ###'
                 sh '''
                         oc project ${STAGE_PROJECT}
-                        oc delete all -l app=${APP_NAME}
-                        sleep 5
-                   '''
 
-                echo '### Creating a new app in Staging ###'
-                sh '''
-                    oc project ${STAGE_PROJECT}
-                    oc new-app --name ${APP_NAME} -i ${APP_NAME}:stage
-                    oc expose svc/${APP_NAME}
-                '''            }
+                        oc process -f .openshift-apply/stage_template.yml \
+                        -n tpage-stage -p APP_NAME=${APP_NAME} \
+                        -p SOURCE_REPOSITORY_URL="${APP_GIT_URL}" \
+                        | oc apply -f -
+
+                        oc rollout latest dc/${APP_NAME}
+                '''
+            }
         }
 
         stage('Wait for deployment in Staging') {

@@ -1,18 +1,51 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+} from 'react-router-dom';
 import logo from './logo.svg';
 import './App.css';
 
-function App() {
+// This site has 3 pages, all of which are rendered
+// dynamically in the browser (not server rendered).
+//
+// Although the page does not ever refresh, notice how
+// React Router keeps the URL up to date as you navigate
+// through the site. This preserves the browser history,
+// making sure things like the back button and bookmarks
+// work properly.
+
+export default function BasicExample() {
   return (
-    <div className="App">
+    <Router>
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <Route path="/health">
+          <Health />
+        </Route>
+      </Switch>
+    </Router>
+  );
+}
+
+// You can think of these components as "pages"
+// in your app.
+
+function Home() {
+  return (
+    <div className="Home">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit
+          This is an example react app. There is a health check at
           {' '}
-          <code>src/App.js</code>
-          {' '}
-          and save to reload.
+          <code>
+            /health
+          </code>
         </p>
         <a
           className="App-link"
@@ -27,4 +60,10 @@ function App() {
   );
 }
 
-export default App;
+function Health() {
+  return (
+    <div>
+      <h2>Success</h2>
+    </div>
+  );
+}
