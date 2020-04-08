@@ -1,5 +1,7 @@
 FROM node:8.15.0-slim
 
+ENV CI true
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
