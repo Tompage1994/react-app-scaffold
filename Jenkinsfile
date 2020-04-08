@@ -75,6 +75,7 @@ pipeline {
         }
 
         stage('Wait for deployment in DEV env') {
+            sh "oc rollout status dc/${APP_NAME} -n ${STAGE_PROJECT}"
             steps {
                 script {
                     openshift.withCluster() {
@@ -121,6 +122,7 @@ pipeline {
         stage('Wait for deployment in Staging') {
             steps {
                 sh "oc get route ${APP_NAME} -n ${STAGE_PROJECT} -o jsonpath='{ .spec.host }' --loglevel=4 > routehost"
+                sh "oc rollout status dc/${APP_NAME} -n ${STAGE_PROJECT}"
 
                 script {
                     routeHost = readFile('routehost').trim()
