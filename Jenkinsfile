@@ -92,6 +92,10 @@ pipeline {
 
         stage('Promote to Staging Env') {
             steps {
+                sh '''
+                    echo "App deployed at:"
+                    oc get route ${APP_NAME} -n ${DEV_PROJECT} -o jsonpath='{ .spec.host }'
+                '''
                 timeout(time: 60, unit: 'MINUTES') {
                     input message: "Promote to Staging?"
                 }

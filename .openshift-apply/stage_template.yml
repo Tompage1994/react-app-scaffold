@@ -1,7 +1,7 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: "${APP_NAME}-template"
+  name: "${APP_NAME}-stage-template"
 objects:
   - kind: DeploymentConfig
     apiVersion: v1
